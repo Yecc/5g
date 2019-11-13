@@ -42,7 +42,7 @@ class GetAnswer:
     def dic2CSV(self):
         name = ['回答']
         csvfile = pandas.DataFrame(columns=name, data=self.answers_list)
-        csvfile.to_csv('5g.csv', encoding='gbk')
+        csvfile.to_csv('5g.csv', encoding='utf_8_sig')
 
 
 
