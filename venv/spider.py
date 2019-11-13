@@ -1,11 +1,13 @@
 import requests
 import json
 import re
+import csv
+import pandas
 
 class GetAnswer:
     def __init__(self):
         self.offset = 0
-        self.dic = {}
+        self.answers_list = []
 
     def get_answers_by_page(self, questions_id, offset):
         url = 'https://www.zhihu.com/api/v4/questions/' + str(questions_id) + '/answers?limit=20&offset=' + str(offset) + '&include=voteup_count,comment_count,content'
@@ -22,10 +24,10 @@ class GetAnswer:
         is_end = data['paging']['is_end']
 
         for i in data['data']:
-            author = i['author']['name']
+            # author = i['author']['name']
             # answers = i['content'].replace('<p>', '').replace('</p>', '').replace('<b>', '').replace('</b>', '')
-            answers = re.sub('<.*?>','',i['content'])
-            self.dic[author] = [answers]
+            answer = re.sub('<.*?>','',i['content'])
+            self.answers_list.append(answer)
 
 
         self.offset = self.offset + 20
@@ -37,10 +39,18 @@ class GetAnswer:
             if is_end:
                 break
 
+    def dic2CSV(self):
+        name = ['回答']
+        csvfile = pandas.DataFrame(columns=name, data=self.answers_list)
+        csvfile.to_csv('5g.csv', encoding='gbk')
+
+
+
 
 
 if __name__ == '__main__':
     getanswer = GetAnswer()
 
     getanswer.get_answers(340858589)
-    print(getanswer.dic)
+    getanswer.dic2CSV()
+    print('jieshu')
